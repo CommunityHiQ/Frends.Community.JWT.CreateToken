@@ -73,8 +73,9 @@ Y3nMZ7rn5nvVYpRsNDPDMnTyq44phbbRCzNu8Imi33w55Y/gKVBY2lCn78IUbFtQ
 ohUljJuLe10H1uKRMtpSDAcCumLnMu5pA7M33E7WLPmxeAbCUdHrXvWADuwsnHlR
 zewJ+E1/wBhCidA2kfZVXWfhmQksv8CMPDUEOajm22Cj4l4is1qiWO0CAwEAAQ==
 -----END RSA PUBLIC KEY-----";
+
         [TestMethod]
-        public void CreateJwtTokenTest()
+        public void CreateJwtTokenTest_RS256()
         {
             var token = JwtTask.CreateJwtToken(new CreateJwtTokenParameters
             {
@@ -85,7 +86,37 @@ zewJ+E1/wBhCidA2kfZVXWfhmQksv8CMPDUEOajm22Cj4l4is1qiWO0CAwEAAQ==
                 Claims = new []
                 {
                     new JwtClaim { ClaimKey = "Name", ClaimValue = "Jefim4ik" }
-                }
+                },
+                Algorithm = JwtAlgorithm.RS256
+            });
+
+            Assert.AreNotEqual(null, token);
+            Assert.AreNotEqual(0, token.Length);
+
+            // JWT tokens always have 2 dot separators between parts
+            Assert.AreEqual(2, token.Count(o => o == '.'));
+        }
+
+        [TestMethod]
+        public void CreateJwtTokenTest_ES256()
+        {
+            var token = JwtTask.CreateJwtToken(new CreateJwtTokenParameters
+            {
+                Audience = "aud",
+                Expires = DateTime.Now.AddDays(7),
+                Issuer = "frends",
+                PrivateKey = "MEECAQAwEwYHKoZIzj0CAQYIKoZIzj0DAQcEJzAlAgEBBCBUXNAfnhTnijplBF638HjVTsoXyRhxYvvdqbAAuqb1Mw==",
+                Claims = new[]
+                {
+                    new JwtClaim("Name", "Jefim4ik"),
+                    new JwtClaim("Name123", @"{ ""name"": ""Jefim4ik"" }") { ClaimValueType = "JSON"},
+                    new JwtClaim("Name123", "123") { ClaimValueType = "http://www.w3.org/2001/XMLSchema#integer"}
+                },
+                CustomHeaderEntries = new []
+                {
+                    new JwtClaim("kid", "12345")
+                },
+                Algorithm = JwtAlgorithm.ES256
             });
 
             Assert.AreNotEqual(null, token);
