@@ -1,4 +1,7 @@
 # Frends.Community.JWT.CreateToken
+
+This Task is deprecated. Use [Frends.Community.OAuth](https://github.com/CommunityHiQ/Frends.Community.OAuth) Tasks insted.
+
 Frends task for creating signed JWT tokens.
 
 - [Installing](#installing)
